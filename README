@@ -1,0 +1,58 @@
+314CA Nedelcu Andrei David
+
+Impartirea comenzilor in argumente se realizeaza prin intermediul unui parser,
+o structura de date ce contine parametri asemanatori cu cei din linia de
+comanda (argc si argv). Printre alte structuri se numara cea care stocheaza
+imaginea si cea care memoreaza selectia curenta.
+In main, functia intra in bucla principala, unde se impart comenzile si se
+apeleaza functiile corespunzatoare.
+
+Image I/O:
+
+Prima faza a incarcarii unei imagini o constituie citirea headerului acesteia.
+In functie de acesti parametri, se aloca o matrice de pixeli, fie monocromi,
+fie cu 3 canale de culori, de dimensiuni potrivite, ce va fi retinuta in
+structura image_t.
+In cadrul scrierii unei imagini, se calculeaza magic-numberul in functie de
+numarul de canale colore ale imaginii si de optiunea aleasa dintre a salva
+fisierul in format ascii sau binar. Dupa scrierea headerului, se scrie
+continutul imaginii in formatul dorit. Matricea care stocheaza imaginea este
+alocata intr-un singur bloc continuu de memorie.
+
+Selectarea regiunii:
+
+Coordonatele marginilor selectiei sunt memorate intr-o structura din main,
+transmisa ca argument la fiecare apel necesar efectuarii unei comenzi.
+Pentru setarea acestora, in cadrul functiei de selectare se verifica numarul,
+dar si tipul parametrilor comenzii iar daca acestia sunt valizi, se extrag
+coordonatele dorite.
+
+Operatiile de I/O si selectare sunt implementate in fisierele pbmIO.c, io_ops.c
+si headerele asociate.
+
+Rotirea si croparea
+
+Aceste operatii au in comun faptul ca imaginea, sau sectiunea de imagine
+rezultata se stocheaza separat, la finalul operatiei aceasta fiind fie
+plasata in locul selectat, fie devenind noua imagine. Rotirea la un unghi
+arbitrar (multiplu de 90) se face prin rotiri succesive la 90 de grade in sens
+orar.
+Fisiere aferente: crop_rot.c si headerul asociat.
+
+Aplicarea filtrelor
+
+Aplicarea unui filtru este o operatie impartita in mai multi pasi, printre
+care se numara, pe langa verificarea corectitudinii argumentelor: stabilirea
+nucleului de convolutare (in functie de filtrul dorit), pentru care exista
+o functie auxiliara, si convolutarea propriu-zisa a fiecarui pixel. Pentru
+acest lucru se creaza o plansa, similar cu operatiile crop si rotate, unde
+se calculeaza imaginea filtrata, aceasta plansa ulterior fiind copiata peste
+regiunea selectata si eliberata din memorie
+
+Iesirea din program
+
+Executia programului se opreste atunci cand se executa cu succes comanda EXIT,
+sau cand se ajunge la finalul datelor de intrare (lucru detectat prin esuarea
+apelului la fgets). In cazul acestor evenimente, se iese fortat din bucla
+principala, in exteriorul acesteia dealocandu-se resursele alocate dinamic
+(imaginea si argumentele parsate).
