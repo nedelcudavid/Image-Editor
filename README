@@ -1,58 +1,27 @@
-314CA Nedelcu Andrei David
+# Image Editor
+## Copyright 2021 Nedelcu Andrei-David
 
-Impartirea comenzilor in argumente se realizeaza prin intermediul unui parser,
-o structura de date ce contine parametri asemanatori cu cei din linia de
-comanda (argc si argv). Printre alte structuri se numara cea care stocheaza
-imaginea si cea care memoreaza selectia curenta.
-In main, functia intra in bucla principala, unde se impart comenzile si se
-apeleaza functiile corespunzatoare.
+### Description
+The command division into arguments is achieved through a parser, a data structure containing parameters similar to those from the command line (argc and argv). Among other structures are the ones storing the image and the current selection.
 
-Image I/O:
+In the main function, the program enters the main loop where commands are parsed and corresponding functions are called.
 
-Prima faza a incarcarii unei imagini o constituie citirea headerului acesteia.
-In functie de acesti parametri, se aloca o matrice de pixeli, fie monocromi,
-fie cu 3 canale de culori, de dimensiuni potrivite, ce va fi retinuta in
-structura image_t.
-In cadrul scrierii unei imagini, se calculeaza magic-numberul in functie de
-numarul de canale colore ale imaginii si de optiunea aleasa dintre a salva
-fisierul in format ascii sau binar. Dupa scrierea headerului, se scrie
-continutul imaginii in formatul dorit. Matricea care stocheaza imaginea este
-alocata intr-un singur bloc continuu de memorie.
+### Image I/O
+The first phase of loading an image consists of reading its header. Depending on these parameters, a pixel matrix is allocated, either monochrome or with 3 color channels, of appropriate dimensions, which will be stored in the image_t structure. 
+When writing an image, the magic number is calculated based on the number of color channels of the image and the chosen option between saving the file in ASCII or binary format. After writing the header, the image content is written in the desired format. The matrix storing the image is allocated in a single continuous block of memory.
 
-Selectarea regiunii:
+### Region Selection
+The coordinates of the selection margins are stored in a structure in the main function, passed as an argument to each necessary command call. To set these, within the selection function, the number and type of command parameters are checked, and if they are valid, the desired coordinates are extracted.
 
-Coordonatele marginilor selectiei sunt memorate intr-o structura din main,
-transmisa ca argument la fiecare apel necesar efectuarii unei comenzi.
-Pentru setarea acestora, in cadrul functiei de selectare se verifica numarul,
-dar si tipul parametrilor comenzii iar daca acestia sunt valizi, se extrag
-coordonatele dorite.
+### I/O and Selection Operations
+I/O and selection operations are implemented in the files pbmIO.c, io_ops.c, and their associated headers.
 
-Operatiile de I/O si selectare sunt implementate in fisierele pbmIO.c, io_ops.c
-si headerele asociate.
+### Rotation and Cropping
+These operations have in common that the image or resulting image section is stored separately. At the end of the operation, it is either placed in the selected location or becomes the new image. Arbitrary angle rotation (multiple of 90) is done by successive rotations at 90 degrees clockwise.
+Associated files: crop_rot.c and its associated header.
 
-Rotirea si croparea
+### Applying Filters
+Applying a filter is an operation divided into multiple steps, including besides checking the correctness of arguments: determining the convolution kernel (based on the desired filter), for which there is an auxiliary function, and the actual convolution of each pixel. For this, a canvas is created, similar to the crop and rotate operations, where the filtered image is calculated, and this canvas is later copied over the selected region and freed from memory.
 
-Aceste operatii au in comun faptul ca imaginea, sau sectiunea de imagine
-rezultata se stocheaza separat, la finalul operatiei aceasta fiind fie
-plasata in locul selectat, fie devenind noua imagine. Rotirea la un unghi
-arbitrar (multiplu de 90) se face prin rotiri succesive la 90 de grade in sens
-orar.
-Fisiere aferente: crop_rot.c si headerul asociat.
-
-Aplicarea filtrelor
-
-Aplicarea unui filtru este o operatie impartita in mai multi pasi, printre
-care se numara, pe langa verificarea corectitudinii argumentelor: stabilirea
-nucleului de convolutare (in functie de filtrul dorit), pentru care exista
-o functie auxiliara, si convolutarea propriu-zisa a fiecarui pixel. Pentru
-acest lucru se creaza o plansa, similar cu operatiile crop si rotate, unde
-se calculeaza imaginea filtrata, aceasta plansa ulterior fiind copiata peste
-regiunea selectata si eliberata din memorie
-
-Iesirea din program
-
-Executia programului se opreste atunci cand se executa cu succes comanda EXIT,
-sau cand se ajunge la finalul datelor de intrare (lucru detectat prin esuarea
-apelului la fgets). In cazul acestor evenimente, se iese fortat din bucla
-principala, in exteriorul acesteia dealocandu-se resursele alocate dinamic
-(imaginea si argumentele parsate).
+### Exiting the Program
+The program execution stops when the EXIT command is successfully executed or when the end of input data is reached (detected by the failure of the fgets call). In these events, the program forcefully exits the main loop, deallocating dynamically allocated resources (image and parsed arguments) outside of it.
