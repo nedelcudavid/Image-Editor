@@ -11,8 +11,6 @@ When writing an image, the magic number is calculated based on the number of col
 
 ### Region Selection
 The coordinates of the selection margins are stored in a structure in the main function, passed as an argument to each necessary command call. To set these, within the selection function, the number and type of command parameters are checked, and if they are valid, the desired coordinates are extracted.
-
-### I/O and Selection Operations
 I/O and selection operations are implemented in the files pbmIO.c, io_ops.c, and their associated headers.
 
 ### Rotation and Cropping
