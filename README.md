@@ -1,4 +1,5 @@
 # Image Editor
+## Copyright 2022 Nedelcu Andrei-David
 
 ## Description
 The command division into arguments is achieved through a parser, a data structure containing parameters similar to those from the command line (argc and argv). Among other structures are the ones storing the image and the current selection.
